@@ -109,4 +109,26 @@ import './popup.css';
       console.log(response.message);
     }
   );
+
+  const putValuesButton = document.querySelector('#putValues')
+  putValuesButton?.addEventListener('click', () => {
+    console.log('putValues clicked')
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tab = tabs[0];
+
+      chrome.tabs.sendMessage(
+        tab.id!,
+        {
+          type: 'PUT_VALUES',
+          payload: {
+            count: 'XLSX file value',
+          },
+        },
+        (response) => {
+          console.log('Current xlsx value passed to contentScript file');
+        }
+      );
+    });
+  })
 })();

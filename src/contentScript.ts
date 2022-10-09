@@ -33,8 +33,15 @@ chrome.runtime.sendMessage(
 
 // Listen for message
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('[contentScript:request.type]', request.type)
   if (request.type === 'COUNT') {
     console.log(`Current count is ${request.payload.count}`);
+  }
+
+  if (request.type === 'PUT_VALUES') {
+    // Log message coming from the `request` parameter
+    console.log('PUT_VALUES contentScript', request.payload);
+    document.body.style.backgroundColor = 'blue'
   }
 
   // Send an empty response
