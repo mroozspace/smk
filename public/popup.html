@@ -3,25 +3,27 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>My Chrome Extension</title>
+  <title>SMK Manager</title>
   <link rel="stylesheet" href="popup.css" />
 </head>
 
 <body>
   <div class="app">
-    <p class="counter-label">Counter</p>
-    <div id="counter" class="counter"></div>
-    <div class="button-container">
-      <button id="decrementBtn" class="button">-</button>
-      <button id="incrementBtn" class="button">+</button>
+    <div class='text'>
+      <h2>SMK manager</h2>
+      <p>Wybierz arkusz z danymi do uzupełnienia.</p>
     </div>
 
-    <hr class="divider" />
+    <div class="button-container">
+      <label id="xlsxInput-label" for="xlsxInput" class="button">
+        Dodaj arkusz
+      </label>
+      <input id="xlsxInput" type="file" accept=".xlsx" />
+    </div>
 
-    <input type="file" />
-    <button id="putValues">wstaw wartości</button>
-    <!-- TODO accept only xlsx -->
-    <!-- file validation -->
+    <div class="button-container">
+      <button class='button' id="putValuesButton">Wstaw wartości</button>
+    </div>
   </div>
 
   <script src="popup.js"></script>

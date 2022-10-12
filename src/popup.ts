@@ -1,6 +1,10 @@
 'use strict';
 
 import './popup.css';
+import {
+  read as XLSXread,
+  utils as XLSXutils
+} from 'xlsx'; // need to import specific features, * doesn't work ...
 
 (function () {
   // We will make use of Storage API to get and store `count` value
@@ -10,125 +14,39 @@ import './popup.css';
   // To get storage access, we have to mention it in `permissions` property of manifest.json file
   // More information on Permissions can we found at
   // https://developer.chrome.com/extensions/declare_permissions
-  const counterStorage = {
-    get: (cb: (count: number) => void) => {
-      chrome.storage.sync.get(['count'], (result) => {
-        cb(result.count);
-      });
-    },
-    set: (value: number, cb: () => void) => {
-      chrome.storage.sync.set(
-        {
-          count: value,
-        },
-        () => {
-          cb();
-        }
-      );
-    },
-  };
-
-  function setupCounter(initialValue = 0) {
-    document.getElementById('counter')!.innerHTML = initialValue.toString();
-
-    document.getElementById('incrementBtn')!.addEventListener('click', () => {
-      updateCounter({
-        type: 'INCREMENT',
-      });
-    });
-
-    document.getElementById('decrementBtn')!.addEventListener('click', () => {
-      updateCounter({
-        type: 'DECREMENT',
-      });
-    });
-  }
-
-  function updateCounter({ type }: { type: string }) {
-    counterStorage.get((count: number) => {
-      let newCount: number;
-
-      if (type === 'INCREMENT') {
-        newCount = count + 1;
-      } else if (type === 'DECREMENT') {
-        newCount = count - 1;
-      } else {
-        newCount = count;
-      }
-
-      counterStorage.set(newCount, () => {
-        document.getElementById('counter')!.innerHTML = newCount.toString();
-
-        // Communicate with content script of
-        // active tab by sending a message
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          const tab = tabs[0];
-
-          chrome.tabs.sendMessage(
-            tab.id!,
-            {
-              type: 'COUNT',
-              payload: {
-                count: newCount,
-              },
-            },
-            (response) => {
-              console.log('Current count value passed to contentScript file');
-            }
-          );
-        });
-      });
-    });
-  }
-
-  function restoreCounter() {
-    // Restore count value
-    counterStorage.get((count: number) => {
-      if (typeof count === 'undefined') {
-        // Set counter value as 0
-        counterStorage.set(0, () => {
-          setupCounter(0);
-        });
-      } else {
-        setupCounter(count);
-      }
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', restoreCounter);
-
   // Communicate with background file by sending a message
-  chrome.runtime.sendMessage(
-    {
-      type: 'GREETINGS',
-      payload: {
-        message: 'Hello, my name is Pop. I am from Popup.',
-      },
-    },
-    (response) => {
-      console.log(response.message);
-    }
-  );
+  const putValuesButton = document.querySelector('#putValuesButton')
+  const xlsxInput: HTMLInputElement | null = document.querySelector('#xlsxInput')
 
-  const putValuesButton = document.querySelector('#putValues')
-  putValuesButton?.addEventListener('click', () => {
-    console.log('putValues clicked')
+  putValuesButton?.addEventListener('click', async () => {
+    // TODO file validation
+    if (xlsxInput?.files?.length) {
+      const fileData = await xlsxInput.files[0].arrayBuffer()
+      const workbook = XLSXread(fileData, { cellDates: true, dateNF: 'yyyy-mm-dd' }); // keep dates as string; {cellDates: true, dateNF:"dd/mm/yy"}
+      const firstWorkbookSheet = workbook.Sheets[workbook.SheetNames[0]];
 
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const tab = tabs[0];
+      const rows = XLSXutils.sheet_to_json(firstWorkbookSheet, { header: 1 }) // raw: false
+      const [_rowHeaders, ...dataToFill] = rows
 
-      chrome.tabs.sendMessage(
-        tab.id!,
-        {
-          type: 'PUT_VALUES',
-          payload: {
-            count: 'XLSX file value',
+      console.log(workbook, firstWorkbookSheet, dataToFill)
+
+      // send data to content script
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tab = tabs[0];
+
+        chrome.tabs.sendMessage(
+          tab.id!,
+          {
+            type: 'PUT_VALUES',
+            payload: {
+              xlsxValues: dataToFill
+            },
           },
-        },
-        (response) => {
-          console.log('Current xlsx value passed to contentScript file');
-        }
-      );
-    });
+          (response) => {
+            console.log('XLSX passed to contentScript file');
+          }
+        );
+      });
+    }
   })
 })();

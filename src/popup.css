@@ -6,6 +6,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 /* normalize css ends here */
 
 html {
@@ -29,36 +30,9 @@ body {
   padding: 20px;
 }
 
-.title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  font-size: 12px;
-}
-
-code {
-  font-size: 12px;
-  font-family: inherit;
-  background-color: rgba(254, 237, 185, 0.3);
-  padding: 2px 4px;
-  border-radius: 2px;
-}
-
-.counter-label {
-  font-size: 12px;
-  margin-bottom: 5px;
-}
-
-.counter {
-  font-size: 36px;
-  font-weight: 700;
-}
-
 .button-container {
   margin-top: 15px;
+  width: 100%;
 }
 
 .button {
@@ -74,19 +48,18 @@ code {
   text-decoration: none;
   transition: transform 0.2s ease;
   user-select: none;
+
+  width: 60%;
 }
 
 .button:focus {
   outline: none;
 }
 
-.button:hover {
-  transform: scale(1.1);
+#xlsxInput {
+  display: none;
 }
 
-.divider {
-  margin: 30px auto 25px;
-  width: 50px;
-  border: 0.5px dashed #000;
-  opacity: 0.1;
+.button:hover {
+  transform: scale(1.05);
 }
