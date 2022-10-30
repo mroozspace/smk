@@ -1,7 +1,7 @@
 {
-  "name": "my-extension-ts",
+  "name": "smk_automator",
   "version": "0.1.0",
-  "description": "My Chrome Extension",
+  "description": "Narzędzie pomagające wprowadzac dane do systemu SMK",
   "private": true,
   "scripts": {
     "watch": "webpack --mode=development --watch --config config/webpack.config.js",
