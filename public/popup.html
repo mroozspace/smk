@@ -3,15 +3,20 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>SMK Manager</title>
+  <title>SMK automator</title>
   <link rel="stylesheet" href="popup.css" />
 </head>
 
 <body>
   <div class="app">
-    <div class='text'>
-      <h2>SMK manager</h2>
+    <h2>SMK automator</h2>
+    <div class="text">
       <p>Wybierz arkusz z danymi do uzupełnienia.</p>
+      <p>Przykładowy arkusz do pobrania z
+        <a target="_blank"
+          href="https://docs.google.com/spreadsheets/d/1NZRD3hUMVgQUosjOGg24ugxOi8KRlFNzlYkcF72d85U/edit?usp=sharing">google.docs</a>
+      </p>
+      <p>Ściezka do pobrania: Plik > pobierz > Microsoft Excel</p>
     </div>
 
     <div class="button-container">
@@ -20,10 +25,18 @@
       </label>
       <input id="xlsxInput" type="file" accept=".xlsx" />
     </div>
+    <div id="xlsx-fileName"></div>
 
     <div class="button-container">
-      <button class='button' id="putValuesButton">Wstaw wartości</button>
+      <button class="button" id="putValuesButton">Wstaw wartości</button>
     </div>
+
+    <p class="info">
+      *jeśli nie możesz załadować pliku, zrestartuj przeglądarkę
+    </p>
+    <!-- <p class="text caption">
+      dodać link do strony kontaktowej, facebook?, mail?
+    </p> -->
   </div>
 
   <script src="popup.js"></script>

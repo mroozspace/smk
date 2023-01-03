@@ -15,7 +15,7 @@ import fillRows from "./utils/fillRows";
 
 // Listen for message
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('[contentScript:request.type]', request.type)
+  // console.log('[contentScript:request.type]', request.type)
 
   if (request.type === 'PUT_VALUES') {
     const rowsData = request.payload.xlsxValues

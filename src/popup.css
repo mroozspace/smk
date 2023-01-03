@@ -30,6 +30,11 @@ body {
   padding: 20px;
 }
 
+.app h2 {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
 .button-container {
   margin-top: 15px;
   width: 100%;
@@ -60,6 +65,19 @@ body {
   display: none;
 }
 
+.display-none {
+  display: none;
+}
+
 .button:hover {
   transform: scale(1.05);
+}
+
+.caption {
+  margin-top: 5px;
+}
+
+.info {
+  margin-top: 20px;
+  font-size: 10px;
 }
