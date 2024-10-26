@@ -7,39 +7,46 @@
   </head>
 
   <body>
-    <div class="app">
-      <h2>SMK automator</h2>
-      <div class="text">
-        <p>Wybierz arkusz z danymi do uzupełnienia.</p>
+    <div
+      class="h-full flex flex-col items-center justify-center p-5 text-center"
+    >
+      <h2 class="text-lg font-semibold mb-3 text-center">SMK automator</h2>
+      <div class="space-y-2 text-xs">
         <p>
-          Przykładowy arkusz do pobrania z
+          Wybierz arkusz z danymi do uzupełnienia. <br />
+          Przykładowy arkusz do pobrania
           <a
             target="_blank"
             href="https://docs.google.com/spreadsheets/d/1NZRD3hUMVgQUosjOGg24ugxOi8KRlFNzlYkcF72d85U/edit?usp=sharing"
-            >google.docs</a
+            class="text-blue-600 hover:text-blue-800 underline"
+            >pobrania dyżurów</a
           >
+          <br />
+          Ściezka do pobrania: Plik > pobierz > Microsoft Excel
         </p>
-        <p>Ściezka do pobrania: Plik > pobierz > Microsoft Excel</p>
       </div>
 
-      <div class="button-container">
+      <div class="mt-4 w-full flex justify-center">
         <label id="xlsxInput-label" for="xlsxInput" class="button">
           Dodaj arkusz
         </label>
         <input id="xlsxInput" type="file" accept=".xlsx" />
       </div>
-      <div id="xlsx-fileName"></div>
+      <div id="xlsx-fileName" class="mt-2"></div>
 
-      <div class="button-container">
+      <div class="mt-4 w-full flex flex-col items-center space-y-2">
         <button class="button" id="putDutyValuesBtn">
           Wstaw wartości (dyżury)
         </button>
+        <button class="button" id="putProcedureValuesBtn">
+          Wstaw wartości (procedury)
+        </button>
       </div>
 
-      <p class="info">
+      <p class="mt-5 text-xs text-gray-600">
         *jeśli nie możesz załadować pliku, zrestartuj przeglądarkę
       </p>
-      <!-- <p class="text caption">
+      <!-- <p class="mt-2 text-sm text-gray-500">
       dodać link do strony kontaktowej, facebook?, mail?
     </p> -->
     </div>
