@@ -1,52 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SMK automator</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>SMK automator</title>
-  <link rel="stylesheet" href="popup.css" />
-</head>
+  <body>
+    <div class="app">
+      <h2>SMK automator</h2>
+      <div class="text">
+        <p>Wybierz arkusz z danymi do uzupełnienia.</p>
+        <p>
+          Przykładowy arkusz do pobrania z
+          <a
+            target="_blank"
+            href="https://docs.google.com/spreadsheets/d/1NZRD3hUMVgQUosjOGg24ugxOi8KRlFNzlYkcF72d85U/edit?usp=sharing"
+            >google.docs</a
+          >
+        </p>
+        <p>Ściezka do pobrania: Plik > pobierz > Microsoft Excel</p>
+      </div>
 
-<body>
-  <div class="app">
-    <h2>SMK automator</h2>
-    <div class="text">
-      <p>Wybierz arkusz z danymi do uzupełnienia.</p>
-      <p>Przykładowy arkusz do pobrania z
-        <a target="_blank"
-          href="https://docs.google.com/spreadsheets/d/1NZRD3hUMVgQUosjOGg24ugxOi8KRlFNzlYkcF72d85U/edit?usp=sharing">google.docs</a>
+      <div class="button-container">
+        <label id="xlsxInput-label" for="xlsxInput" class="button">
+          Dodaj arkusz
+        </label>
+        <input id="xlsxInput" type="file" accept=".xlsx" />
+      </div>
+      <div id="xlsx-fileName"></div>
+
+      <div class="button-container">
+        <button class="button" id="putDutyValuesBtn">
+          Wstaw wartości (dyżury)
+        </button>
+      </div>
+
+      <p class="info">
+        *jeśli nie możesz załadować pliku, zrestartuj przeglądarkę
       </p>
-      <p>Ściezka do pobrania: Plik > pobierz > Microsoft Excel</p>
-    </div>
-
-    <div class="button-container">
-      <label id="xlsxInput-label" for="xlsxInput" class="button">
-        Dodaj arkusz
-      </label>
-      <input id="xlsxInput" type="file" accept=".xlsx" />
-    </div>
-    <div id="xlsx-fileName"></div>
-
-    <div class="button-container">
-      <button class="button" id="putValuesButton">Wstaw wartości</button>
-    </div>
-
-    <p class="info">
-      *jeśli nie możesz załadować pliku, zrestartuj przeglądarkę
-    </p>
-    <!-- <p class="text caption">
+      <!-- <p class="text caption">
       dodać link do strony kontaktowej, facebook?, mail?
     </p> -->
-  </div>
+    </div>
 
-  <script src="popup.js"></script>
+    <script src="popup.js"></script>
 
-  <!--
+    <!--
       This HTML file opens when you click on icon from the toolbar.
 
       To begin the development, run `npm run watch`.
       To create a production bundle, use `npm run build`.
     -->
-</body>
-
+  </body>
 </html>

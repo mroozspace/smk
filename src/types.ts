@@ -3,4 +3,4 @@ export type XlsxRowData = [
   liczbaMinut: string,
   dataRozpoczecia: Date,
   nazwaKomorkiOrganizacyjnej: string
-]
+];

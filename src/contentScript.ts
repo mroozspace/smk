@@ -1,6 +1,6 @@
 'use strict';
 
-import fillRows from "./utils/fillRows";
+import fillRows from './utils/fillRows';
 
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
@@ -18,8 +18,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // console.log('[contentScript:request.type]', request.type)
 
   if (request.type === 'PUT_VALUES') {
-    const rowsData = request.payload.xlsxValues
-    fillRows(rowsData)
+    const rowsData = request.payload.xlsxValues;
+    fillRows(rowsData);
   }
 
   // Send an empty response
