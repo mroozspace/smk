@@ -18,3 +18,22 @@ body {
 #xlsxInput {
   @apply hidden;
 }
+
+#xlsxInput-label {
+  @apply inline-block px-2 py-2.5 mx-1 cursor-pointer rounded transition-all duration-200 w-3/5 text-xs;
+  @apply border-2 border-dashed border-gray-300;
+  @apply hover:border-gray-400;
+  @apply bg-transparent;
+}
+
+#xlsxInput-label.dragover {
+  @apply border-orange-300 bg-orange-50;
+}
+
+#xlsxInput-label.has-file {
+  @apply border-solid border-orange-300;
+}
+
+.caption {
+  @apply text-xs text-gray-600 mt-1;
+}
