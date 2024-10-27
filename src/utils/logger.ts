@@ -9,7 +9,7 @@ export type LogContext = 'background' | 'popup' | 'contentScript' | 'utils';
 
 // Hardcoded flag for enabling/disabling logs
 // In a real environment, this could be tied to process.env.NODE_ENV
-const IS_DEVELOPMENT = true;
+const IS_DEVELOPMENT = false;
 
 export class Logger {
   constructor(private readonly context: LogContext) {}
