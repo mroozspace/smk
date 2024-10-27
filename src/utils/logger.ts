@@ -5,11 +5,15 @@ export enum LogLevel {
   ERROR = 'ERROR',
 }
 
-export type LogContext = 'background' | 'popup' | 'contentScript' | 'utils';
+export type LogContext =
+  | 'background'
+  | 'popup'
+  | 'contentScript'
+  | 'utils'
+  | 'errorHandler';
 
-// Hardcoded flag for enabling/disabling logs
-// In a real environment, this could be tied to process.env.NODE_ENV
-const IS_DEVELOPMENT = false;
+// Development mode is enabled when running npm run dev (webpack --mode=development)
+const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 export class Logger {
   constructor(private readonly context: LogContext) {}
