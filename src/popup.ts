@@ -2,6 +2,13 @@
 
 import './popup.css';
 import { processDutyFile, sendDutyDataToContent } from './utils/dutyHandler';
+import { Logger } from './utils/logger';
+import {
+  processProcedureFile,
+  sendProcedureDataToContent,
+} from './utils/procedureHandler';
+
+const logger = new Logger('popup');
 
 (function () {
   const putDutyValuesBtn = document.querySelector('#putDutyValuesBtn');
@@ -32,8 +39,19 @@ import { processDutyFile, sendDutyDataToContent } from './utils/dutyHandler';
   putDutyValuesBtn?.addEventListener('click', async () => {
     if (xlsxInput?.files?.length) {
       const xlsxValues = await processDutyFile(xlsxInput.files[0]);
-      console.log('Processed XLSX values:', xlsxValues);
+      logger.info('Processed XLSX values:', xlsxValues);
       sendDutyDataToContent(xlsxValues);
+    }
+  });
+
+  const putProcedureValuesBtn = document.querySelector(
+    '#putProcedureValuesBtn'
+  );
+  putProcedureValuesBtn?.addEventListener('click', async () => {
+    if (xlsxInput?.files?.length) {
+      const xlsxValues = await processProcedureFile(xlsxInput.files[0]);
+      logger.info('Processed XLSX values:', xlsxValues);
+      sendProcedureDataToContent(xlsxValues);
     }
   });
 })();

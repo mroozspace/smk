@@ -5,7 +5,7 @@ export enum LogLevel {
   ERROR = 'ERROR',
 }
 
-export type LogContext = 'background' | 'popup' | 'contentScript';
+export type LogContext = 'background' | 'popup' | 'contentScript' | 'utils';
 
 // Hardcoded flag for enabling/disabling logs
 // In a real environment, this could be tied to process.env.NODE_ENV

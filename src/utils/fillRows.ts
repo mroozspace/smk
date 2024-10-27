@@ -1,6 +1,9 @@
 import { PRE_DEFINED_SHIFT_TIMES } from '../constants';
-import { XlsxRowData } from '../types';
+import { XlsxDutyRowData, XlsxProcedureRowData } from '../types';
 import { formatDate } from './formatDate';
+import { Logger } from './logger';
+
+const logger = new Logger('utils');
 
 /** API available since Chrome v103 */
 type CheckVisibility = {
@@ -13,8 +16,56 @@ const insertValue = (node: HTMLElement, value: string) => {
   document.execCommand('insertText', false, value);
 };
 
-const fillRow = (
-  row: HTMLElement,
+const getAddBtn = () =>
+  [...document.querySelectorAll('button')].filter(
+    (el: WithCheckVisibility<HTMLButtonElement>) =>
+      el?.checkVisibility?.() && el.innerText === 'Dodaj'
+  )[0];
+
+const addRows = async (addButton: HTMLButtonElement, rowsDataCount: number) => {
+  const BTN_CLICKS_PAUSE_TRESHOLD = 10;
+  for (let i = 0; i < rowsDataCount; i++) {
+    addButton.click();
+    if (i % BTN_CLICKS_PAUSE_TRESHOLD === 0) {
+      // potrzebny throttle, na kazde klikniecie idzie request
+      await new Promise((res, rej) => setTimeout(() => res(true), 100));
+    }
+  }
+};
+
+type RowFiller<T> = (row: HTMLElement, data: T) => void;
+
+const fillRows = async <T>(
+  rowsData: T[],
+  rowFiller: RowFiller<T>,
+  getTableRows: () => HTMLElement[]
+) => {
+  const addButton = getAddBtn();
+  logger.info('running fillRows', rowsData);
+
+  // rowFiller instanceof == ''
+
+  if (!addButton) {
+    throw Error('nie znaleziono przycisku dodaj');
+  }
+
+  const insertDataToRows = async () => {
+    const tableRows = getTableRows();
+    for (let i = 0; i < rowsData.length; i++) {
+      const newRow = tableRows[i]; // newRow = tableRows[tableRows.length - (i + 2)]; // dlaczego tableRows.length - (i + 2)
+      if (!newRow) {
+        throw Error(`nie znaleziono wiersza ${i}`);
+      }
+      rowFiller(newRow, rowsData[i]);
+    }
+  };
+
+  await addRows(addButton, rowsData.length);
+  await insertDataToRows();
+};
+
+const fillDutyRow: RowFiller<XlsxDutyRowData> = (
+  row,
   [
     liczbaGodzin = '10',
     liczbaMinut = '5',
@@ -34,64 +85,95 @@ const fillRow = (
     input_nazwa_komorki_organizacyjnej,
   ] = row.querySelectorAll('input');
 
-  const formattedDate = formatDate(dataRozpoczecia); // bez tego przesunięcie o 1 dzień do tyłu...
+  const formattedDate = formatDate(dataRozpoczecia);
 
-  // dzień
   insertValue(input_data_rozpoczecia, formattedDate);
-  // nazwa komórki organizacyjnej
   insertValue(input_nazwa_komorki_organizacyjnej, nazwaKomorkiOrganizacyjnej);
-  // liczba godzin
   insertValue(input_liczba_godzin, liczbaGodzin);
-  // liczba liczba minut
   insertValue(input_liczba_minut, liczbaMinut);
 
   if (
     PRE_DEFINED_SHIFT_TIMES.includes(`${liczbaGodzin}h ${liczbaMinut}min`) &&
     select_godziny
   ) {
-    // wybierz liczbę godzin
     select_godziny.value = `${liczbaGodzin}h ${liczbaMinut}min`;
     select_godziny.dispatchEvent(new Event('change', { bubbles: true }));
   }
 };
 
-const fillRows = async (rowsData: XlsxRowData[]) => {
-  const addButton = [...document.querySelectorAll('button')].filter(
-    (el: WithCheckVisibility<HTMLButtonElement>) =>
-      el?.checkVisibility?.() && el.innerText === 'Dodaj'
-  )[0];
-  // Może działać tylko dla przycisku dodaj obok pierwszego roku document.querySelector("#inner_content_right > div > div > div > div.C5.NCC > fieldset > table > tbody > tr:nth-child(2) > td > div > div.NCC > div > table > tbody > tr > td > div > div > div > fieldset > table > tbody > tr:nth-child(7) > td > div > div > table > tbody > tr > td > div > div > fieldset > table > tbody > tr:nth-child(3) > td > div > button")
-  const dataTable = addButton.parentElement?.querySelector('table');
-  //document.querySelector(`#inner_content_right > div > div > div > div.C5.NCC > fieldset > table > tbody > tr:nth-child(2) > td > div > div.NCC > div > table > tbody > tr > td > div > div > div > fieldset > table > tbody > tr:nth-child(7) > td > div > div > table > tbody > tr > td > div > div > fieldset > table > tbody > tr:nth-child(3) > td > div > div > div > table > tbody:nth-child(3)`)
-
-  if (!addButton) {
-    throw Error('nie znaleziono przycisku dodaj');
+const fillProcedureRow: RowFiller<XlsxProcedureRowData> = (
+  row,
+  [
+    data = new Date(),
+    rok = '1',
+    kodZabiegu = 'A - operator',
+    osobaWykonujaca = 'Imię i nazwisko',
+    miejsceWykonania = 'Oddział Chirurgii Onkologicznej Chorób Piersi - Wielkopolskie Centrum Onkologii im. M. Skłodowskiej-Curie',
+    nazwaStazu = 'Staż kierunkowy w zakresie chirurgii ogólnej',
+    inicjalyPacjenta = 'XX',
+    plecPacjenta = 'M',
+    daneAsystenta = '',
+    proceduraGrupa = '',
+  ]
+) => {
+  if (row.querySelectorAll('input').length === 0) {
+    throw new Error('Nie znaleziono inputow');
   }
-  if (!dataTable) {
-    throw Error('nie znaleziono tabeli z danymi');
-  }
 
-  const addRows = async () => {
-    for (let i = 0; i < rowsData.length; i++) {
-      addButton.click();
-      if (i % 20 === 0) {
-        // potrzebny throttle, na kazde klikniecie idzie request
-        await new Promise((res, rej) => setTimeout(() => res(true), 100));
-      }
+  const inputs = row.querySelectorAll('input');
+  const selects = row.querySelectorAll('select');
+  const formattedDate = formatDate(data);
+
+  const inputValues = [
+    formattedDate,
+    osobaWykonujaca,
+    inicjalyPacjenta,
+    daneAsystenta,
+    proceduraGrupa,
+  ];
+
+  const selectsValues = [
+    rok,
+    kodZabiegu,
+    miejsceWykonania,
+    nazwaStazu,
+    plecPacjenta,
+  ];
+
+  inputs.forEach((input, index) => {
+    if (inputValues[index]) {
+      insertValue(input as HTMLElement, inputValues[index]);
     }
-  };
+  });
 
-  const insertDataToRows = async () => {
-    for (let i = 0; i < rowsData.length; i++) {
-      const tableRows = dataTable.querySelectorAll('tr');
-      // console.log(`inserting ${i}`, rowsData[i])
-      const newRow = tableRows[tableRows.length - (i + 2)];
-
-      fillRow(newRow, rowsData[i]);
-    }
-  };
-
-  addRows().then(insertDataToRows);
+  selects.forEach((select, index) => {
+    select.value = selectsValues[index];
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  });
 };
 
-export default fillRows;
+const fillDutyRows = async (rowsData: XlsxDutyRowData[]) => {
+  const getDutyTableRows = () => {
+    const addButton = getAddBtn();
+    const dataTable = addButton?.parentElement?.querySelector('table');
+    if (!dataTable) {
+      throw Error('nie znaleziono tabeli z danymi');
+    }
+    return Array.from(dataTable.querySelectorAll('tr'));
+  };
+
+  await fillRows(rowsData, fillDutyRow, getDutyTableRows);
+};
+
+const fillProcedureRows = async (rowsData: XlsxProcedureRowData[]) => {
+  const getProcedureTableRows = () => {
+    const FIELDS_IN_PROCEDURE_ROW = 14;
+    return Array.from(document.querySelectorAll('tr')).filter(
+      (row) => row.querySelectorAll('td').length === FIELDS_IN_PROCEDURE_ROW
+    ) as HTMLElement[];
+  };
+
+  await fillRows(rowsData, fillProcedureRow, getProcedureTableRows);
+};
+
+export { fillDutyRows, fillProcedureRows };
