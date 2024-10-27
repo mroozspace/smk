@@ -11,6 +11,8 @@ export const PRE_DEFINED_SHIFT_TIMES = [
 export enum MessageEventType {
   INSERT_DUTY_DATA = 'INSERT_DUTY_DATA',
   INSERT_PROCEDURE_DATA = 'INSERT_PROCEDURE_DATA',
+  CHECK_PAGE_CONTENT = 'CHECK_PAGE_CONTENT',
+  PAGE_CONTENT_RESPONSE = 'PAGE_CONTENT_RESPONSE',
 }
 
 export type MessageEvent =
@@ -24,5 +26,14 @@ export type MessageEvent =
       type: MessageEventType.INSERT_PROCEDURE_DATA;
       payload: {
         xlsxValues: XlsxProcedureRowData[];
+      };
+    }
+  | {
+      type: MessageEventType.CHECK_PAGE_CONTENT;
+    }
+  | {
+      type: MessageEventType.PAGE_CONTENT_RESPONSE;
+      payload: {
+        hasDutyContent: boolean;
       };
     };

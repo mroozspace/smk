@@ -11,6 +11,8 @@ type RowMapper<T extends XlsxRowData> = (row: (string | number)[]) => T;
 type MessageTypeToData = {
   [MessageEventType.INSERT_DUTY_DATA]: XlsxDutyRowData;
   [MessageEventType.INSERT_PROCEDURE_DATA]: XlsxProcedureRowData;
+  [MessageEventType.CHECK_PAGE_CONTENT]: never;
+  [MessageEventType.PAGE_CONTENT_RESPONSE]: { hasDutyContent: boolean };
 };
 
 /**
